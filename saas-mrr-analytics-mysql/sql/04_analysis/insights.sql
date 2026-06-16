@@ -1,5 +1,5 @@
 
--- 0. Data quality check 
+-- Data quality check 
 SELECT 'total_events'    AS metric, COUNT(*) AS value FROM stg_mrr_unified
 UNION ALL SELECT 'telco_events',    COUNT(*) FROM stg_mrr_unified WHERE data_source = 'telco'
 UNION ALL SELECT 'stripe_events',   COUNT(*) FROM stg_mrr_unified WHERE data_source = 'stripe'
@@ -105,10 +105,10 @@ nrr_calc AS (
 )
 SELECT
     event_month,
-    ROUND(starting_mrr, 2)                         AS starting_mrr,
-    ROUND(expansion, 2)                            AS expansion_mrr,
-    ROUND(contraction, 2)                          AS contraction_mrr,
-    ROUND(churn, 2)                                AS churn_mrr,
+    ROUND(starting_mrr, 2) AS starting_mrr,
+    ROUND(expansion, 2) AS expansion_mrr,
+    ROUND(contraction, 2) AS contraction_mrr,
+    ROUND(churn, 2) AS churn_mrr,
     ROUND(
         100.0 * (starting_mrr + expansion + contraction + churn)
         / NULLIF(starting_mrr, 0),
@@ -158,9 +158,9 @@ SELECT
         WHEN months_to_churn <= 6  THEN '4-6 months'
         WHEN months_to_churn <= 12 THEN '7-12 months'
         ELSE '12+ months'
-    END                                                          AS tenure_at_churn,
-    COUNT(*)                                                     AS churned_customers,
-    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 1)           AS pct_of_all_churned
+    END AS tenure_at_churn,
+    COUNT(*) AS churned_customers,
+    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 1) AS pct_of_all_churned
 FROM churn_evts
 GROUP BY tenure_at_churn
 ORDER BY MIN(months_to_churn);
