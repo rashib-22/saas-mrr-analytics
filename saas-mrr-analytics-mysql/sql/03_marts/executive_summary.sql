@@ -1,12 +1,3 @@
--- ============================================================
--- executive_summary.sql  |  MySQL  —  Executive mart view
--- ============================================================
--- MySQL changes:
---   • DATE_FORMAT instead of DATE_TRUNC for month flooring
---   • Window functions: fully supported MySQL 8.0+ ✅
---   • GROUP BY must list all non-aggregated columns explicitly
---     (MySQL strict mode — no implicit grouping)
--- ============================================================
 
 CREATE OR REPLACE VIEW executive_mrr_summary AS
 
@@ -27,22 +18,22 @@ WITH monthly AS (
 
 SELECT
     event_month,
-    ROUND(new_mrr, 2)                                                AS new_mrr,
-    ROUND(expansion_mrr, 2)                                          AS expansion_mrr,
-    ROUND(reactivation_mrr, 2)                                       AS reactivation_mrr,
-    ROUND(contraction_mrr, 2)                                        AS contraction_mrr,
-    ROUND(churned_mrr, 2)                                            AS churned_mrr,
-    ROUND(net_new_mrr, 2)                                            AS net_new_mrr,
+    ROUND(new_mrr, 2) AS new_mrr,
+    ROUND(expansion_mrr, 2) AS expansion_mrr,
+    ROUND(reactivation_mrr, 2) AS reactivation_mrr,
+    ROUND(contraction_mrr, 2) AS contraction_mrr,
+    ROUND(churned_mrr, 2) AS churned_mrr,
+    ROUND(net_new_mrr, 2) AS net_new_mrr,
 
     ROUND(SUM(net_new_mrr) OVER (
         ORDER BY event_month
         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-    ), 2)                                                            AS cumulative_mrr,
+    ), 2) AS cumulative_mrr,
 
     ROUND(SUM(net_new_mrr) OVER (
         ORDER BY event_month
         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-    ) * 12, 2)                                                       AS arr_run_rate,
+    ) * 12, 2)  AS arr_run_rate,
 
     new_customers,
     churned_customers,
@@ -55,7 +46,7 @@ SELECT
                 ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
             ), 0
         ), 1
-    )                                                                AS mrr_growth_pct,
+    ) AS mrr_growth_pct,
 
     ROUND(
         100.0 * expansion_mrr
@@ -65,7 +56,7 @@ SELECT
                 ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
             ), 0
         ), 1
-    )                                                                AS expansion_rate_pct
+    ) AS expansion_rate_pct
 
 FROM monthly
 ORDER BY event_month;
