@@ -1,11 +1,3 @@
--- ============================================================
--- mrr_waterfall.sql  |  MySQL  —  MRR Waterfall mart
--- ============================================================
--- MySQL change: window function SUM() OVER () is supported
--- in MySQL 8.0+. No changes needed to window syntax.
--- DATE_FORMAT already applied in stg_mrr_unified so
--- event_month is already a DATE string '2019-01-01' format.
--- ============================================================
 
 CREATE OR REPLACE VIEW mrr_waterfall AS
 
@@ -32,13 +24,10 @@ SELECT
     contraction_mrr,
     churned_mrr,
     net_new_mrr,
-
-    -- Window functions: supported in MySQL 8.0+ ✅
     SUM(net_new_mrr) OVER (
         ORDER BY event_month
         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-    )                                                                         AS cumulative_mrr,
-
+    ) AS cumulative_mrr,
     new_customers,
     churned_customers,
 
@@ -50,7 +39,7 @@ SELECT
                 ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
             ), 0
         ), 2
-    )                                                                         AS logo_churn_pct
+    ) AS logo_churn_pct
 
 FROM monthly
 ORDER BY event_month;
