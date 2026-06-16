@@ -1,12 +1,4 @@
--- ============================================================
--- schema_stripe.sql  |  MySQL  —  Raw Stripe events table
--- ============================================================
--- MySQL changes vs standard SQL:
---   • ENGINE=InnoDB  (row-level locking, supports transactions)
---   • DEFAULT CHARSET=utf8mb4  (handles all Unicode characters)
---   • No CREATE INDEX IF NOT EXISTS  (not supported in MySQL)
---   • NULL columns use DEFAULT NULL explicitly
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS raw_stripe_events (
     subscription_id   VARCHAR(50)    NOT NULL,
