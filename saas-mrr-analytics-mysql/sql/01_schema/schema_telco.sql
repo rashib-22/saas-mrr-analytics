@@ -1,10 +1,3 @@
--- ============================================================
--- schema_telco.sql  |  MySQL  —  Raw IBM Telco customers table
--- ============================================================
--- SOURCE: IBM Telco Customer Churn (Kaggle)
--- URL: kaggle.com/datasets/blastchar/telco-customer-churn
--- FILE: WA_Fn-UseC_-Telco-Customer-Churn.csv  (7,043 rows)
--- ============================================================
 
 CREATE TABLE IF NOT EXISTS raw_telco_customers (
     customer_id        VARCHAR(50)   NOT NULL,
